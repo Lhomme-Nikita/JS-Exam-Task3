@@ -1,13 +1,23 @@
-/* ------------------------------ TASK 3 -----------------------------------
-Parašykite JS kodą, kuris leis vartotojui paspaudus ant mygtuko "Show users"
-pamatyti vartotojus iš Github API (endpoint'as pateiktas žemiau).
+const ENDPOINT = "https://api.github.com/users";
+const btnElement = document.getElementById("btn");
+const outputElement = document.getElementById("output");
 
-Paspaudus mygtuką "Show users":
-1. Pateikiamas informacijos atvaizdavimas <div id="output"></div> bloke
-1.1. Infrmacija, kuri pateikiama: "login" ir "avatar_url" reikšmės (kortelėje)
-2. Žinutė "Press "Show Users" button to see users" turi išnykti;
-"
-Pastaba: Informacija apie user'į (jo kortelė) bei turi turėti bent minimalų stilių;
--------------------------------------------------------------------------- */
+btnElement.addEventListener("click", async function () {
+  try {
+    const response = await fetch(ENDPOINT);
+    const data = await response.json();
 
-const ENDPOINT = 'https://api.github.com/users';
+    outputElement.innerHTML = "";
+
+    data.forEach((user) => {
+      const userCard = document.createElement("div");
+      userCard.classList.add("user-card");
+      userCard.innerHTML = `
+        <img src="${user.avatar_url}" alt="${user.login}" class="user-avatar">
+        <p class="user-login">${user.login}</p>`;
+      outputElement.appendChild(userCard);
+    });
+  } catch (error) {
+    console.log("Error fetching users:", error);
+  }
+});
